@@ -79,9 +79,11 @@ http://127.0.0.1:8000
 The web app lets a client:
 
 - choose a station
+- upload a groundwater CSV directly
 - enter a year
 - view predicted groundwater depth for `DJF`, `MAM`, `JJA`, `SON`
 - view the annual mean
+- download the prediction result as a CSV file
 
 ## Current Example Output
 
