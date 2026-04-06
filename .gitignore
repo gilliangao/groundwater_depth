@@ -1,0 +1,4 @@
+venv_plot/
+__pycache__/
+*.pyc
+.DS_Store

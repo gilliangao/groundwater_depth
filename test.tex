@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+\geometry{margin=1in}
+\onehalfspacing
+\title{Engineering Assessment of Aerosol Materials in Urban Atmospheric Systems Under Current and Future Climate Conditions}
+\author{Xingran (Gillian) Gao \\ Membership Number: 711359 \\ Institute of Materials, Minerals and Mining}
+\date{2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Atmospheric aerosols are particulate materials suspended within the atmospheric boundary layer that influence environmental systems through interactions with radiation, atmospheric circulation, and thermodynamic processes.
+This report presents an engineering assessment of aerosol materials within urban atmospheric systems using numerical modelling and observational validation. The modelling framework was developed using the Weather Research and Forecasting (WRF) model and integrates observational datasets from ground monitoring stations, satellite observations, and global reanalysis products.
+Model outputs were validated using statistical performance metrics including correlation coefficient, mean bias error, and root mean square error. The results demonstrate that reductions in aerosol material concentrations can increase urban surface temperatures due to reduced scattering of solar radiation. However, future climate scenarios indicate that long-term urban warming is primarily driven by large-scale climate change.
+This work demonstrates how engineering modelling approaches can be applied to analyse particulate materials within environmental systems and supports improved understanding of aerosol impacts on urban climate behaviour.
+\end{abstract}
+\tableofcontents
+\newpage
+\section{Introduction}
+Urban atmospheric systems involve complex interactions between particulate materials, atmospheric dynamics, and radiative processes. Aerosol particles consist of solid or liquid materials suspended in the atmosphere and originate from both natural and anthropogenic sources.
+From an engineering perspective, aerosols can be considered particulate material systems transported within atmospheric flow. Their physical properties influence radiative transfer, atmospheric stability, and urban thermal behaviour.
+The objective of this report is to demonstrate how engineering modelling techniques can be applied to analyse aerosol behaviour within urban atmospheric systems.
+\section{Engineering Principles and Scientific Basis}
+Atmospheric motion is governed by the Navier--Stokes equations which describe conservation of momentum within a fluid system:
+\begin{equation}
+\frac{\partial u}{\partial t} + (u \cdot \nabla)u =
+-\frac{1}{\rho}\nabla p + \nu\nabla^2u
+\end{equation}
+where $u$ represents velocity, $\rho$ is air density, $p$ is pressure, and $\nu$ is kinematic viscosity.
+Aerosol particles behave as small particulate materials suspended in atmospheric flow. Their settling behaviour can be approximated using Stokes' law:
+\begin{equation}
+v_s = \frac{2 r^2 (\rho_p - \rho_f) g}{9 \mu}
+\end{equation}
+where $v_s$ is settling velocity, $r$ is particle radius, $\rho_p$ is particle density, $\rho_f$ is air density, and $\mu$ is dynamic viscosity.
+For example, a particle with diameter $1 \, \mu m$ and density $1500 \, kg/m^3$ has an approximate settling velocity of:
+\[
+v_s \approx 3 \times 10^{-5} \, m/s
+\]
+This very low settling velocity explains why fine aerosol particles remain suspended in atmospheric systems for extended periods.
+\section{Aerosols as Particulate Materials}
+From a materials engineering perspective, aerosols can be considered particulate material systems suspended within a gaseous medium. Their behaviour depends on particle size distribution, density, chemical composition, and hygroscopic properties.
+Typical atmospheric aerosol particles range from $0.01\,\mu m$ to $10\,\mu m$ in diameter. These particles are commonly classified as PM10, PM2.5, and ultrafine particles.
+Different material types exhibit different radiative properties. Sulfate particles primarily scatter radiation, while black carbon particles strongly absorb radiation.
+Understanding these material properties is essential for representing aerosol behaviour in atmospheric models.
+\section{Modelling Framework and Methodology}
+The modelling framework used in this work is based on the Weather Research and Forecasting (WRF) model. WRF is a mesoscale numerical modelling system widely used for atmospheric simulation.
+Meteorological boundary conditions were obtained from ERA5 global reanalysis datasets, which provide consistent atmospheric variables including temperature, wind speed, humidity, and soil moisture.
+Aerosol optical properties were incorporated using global aerosol datasets including aerosol optical depth, single scattering albedo, and Angstrom exponent.
+\section{Data Sources and Measurement Methods}
+Observational datasets were used to evaluate the reliability of the modelling framework.
+Ground monitoring stations provided measurements of atmospheric variables including air temperature, precipitation, and particulate concentrations.
+Satellite observations from the MODIS instruments aboard the Terra and Aqua satellites provided spatial information about aerosol optical depth.
+These datasets enabled comparison between simulated and observed atmospheric conditions.
+\section{Model Validation and Verification}
+Model performance was evaluated using statistical validation metrics.
+The Pearson correlation coefficient measures the relationship between simulated and observed values:
+\begin{equation}
+R =
+\frac{\sum (X_i - \bar X)(Y_i - \bar Y)}
+{\sqrt{\sum (X_i - \bar X)^2}\sqrt{\sum (Y_i - \bar Y)^2}}
+\end{equation}
+Mean Bias Error:
+\begin{equation}
+MBE = \frac{1}{n}\sum (P_i - O_i)
+\end{equation}
+Root Mean Square Error:
+\begin{equation}
+RMSE = \sqrt{\frac{1}{n}\sum (P_i - O_i)^2}
+\end{equation}
+These metrics provide quantitative measures of model accuracy.
+\section{Engineering Analysis of Aerosol Behaviour}
+Aerosol particles influence atmospheric systems through interactions with radiation and atmospheric circulation.
+A simplified surface energy balance can be expressed as:
+\begin{equation}
+R_n = H + LE + G
+\end{equation}
+where $R_n$ represents net radiation, $H$ is sensible heat flux, $LE$ is latent heat flux, and $G$ is ground heat flux.
+Changes in aerosol concentrations alter incoming radiation and therefore influence surface temperature.
+\section{Discussion}
+The modelling results indicate that aerosol materials play an important role in urban atmospheric behaviour. However, their influence must be interpreted alongside large-scale climate dynamics.
+Engineering modelling of environmental systems requires transparent management of uncertainty and careful interpretation of results.
+\section{Conclusions}
+This work demonstrates the application of engineering modelling techniques to analyse aerosol particulate behaviour within an urban atmospheric system.
+Key conclusions include:
+\begin{itemize}
+\item Aerosol materials influence urban temperature responses through radiative interactions.
+\item Numerical modelling provides a useful tool for analysing aerosol behaviour.
+\item Validation against observational datasets is essential for reliable engineering analysis.
+\end{itemize}
+\section*{Appendices}
+Appendix A: Model configuration details
+Appendix B: Additional validation results
+Appendix C: Supporting observational datasets
+\end{document}

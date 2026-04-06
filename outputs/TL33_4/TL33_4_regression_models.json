@@ -1,0 +1,43 @@
+{
+  "station_code": "TL33_4",
+  "source_csv": "FF-RGroundwater-TL33_4-GWL.csv",
+  "year_range": {
+    "start": 2000,
+    "end": 2080
+  },
+  "algorithm": "linear_regression",
+  "seasons": {
+    "DJF": {
+      "season": "DJF",
+      "slope": 0.010681488750041834,
+      "intercept": 57.11626794264028,
+      "r_squared": 0.10503772632544826,
+      "p_value": 0.0031610031268815473,
+      "std_error": 0.003507906020877628
+    },
+    "MAM": {
+      "season": "MAM",
+      "slope": 0.0156266008274175,
+      "intercept": 50.62195254709344,
+      "r_squared": 0.09271690501373164,
+      "p_value": 0.005713038727723431,
+      "std_error": 0.005499749631790842
+    },
+    "JJA": {
+      "season": "JJA",
+      "slope": 0.008992864790254223,
+      "intercept": 63.18979786907522,
+      "r_squared": 0.059280559284847094,
+      "p_value": 0.02850248669175825,
+      "std_error": 0.004030495415518812
+    },
+    "SON": {
+      "season": "SON",
+      "slope": 0.011581249674363242,
+      "intercept": 55.91144678476287,
+      "r_squared": 0.12048318205172451,
+      "p_value": 0.0014997484759385281,
+      "std_error": 0.0035204707350088424
+    }
+  }
+}
