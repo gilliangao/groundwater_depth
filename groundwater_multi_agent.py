@@ -580,6 +580,53 @@ class GroundwaterWorkflowManager:
         }
 
 
+def get_station_catalog() -> List[StationRecord]:
+    return StationDiscoveryAgent().list_stations()
+
+
+def find_local_station_csv(station_code: str, search_dir: Path = Path(".")) -> Optional[Path]:
+    normalized = station_code.strip().upper().replace("/", "_")
+    exact_patterns = [
+        f"FF-RGroundwater-{normalized}-GWL.csv",
+        f"{normalized}.csv",
+    ]
+    for pattern in exact_patterns:
+        matches = sorted(search_dir.glob(pattern))
+        if matches:
+            return matches[0]
+
+    fuzzy_matches = sorted(search_dir.glob(f"*{normalized}*.csv"))
+    if fuzzy_matches:
+        return fuzzy_matches[0]
+    return None
+
+
+def ensure_station_model(
+    station_code: str,
+    base_dir: Path = Path("."),
+    start_year: int = 2000,
+    end_year: int = 2080,
+) -> Path:
+    output_dir = base_dir / "outputs" / station_code
+    model_json = output_dir / f"{station_code}_regression_models.json"
+    if model_json.exists():
+        return model_json
+
+    input_csv = find_local_station_csv(station_code, search_dir=base_dir)
+    if input_csv is None:
+        raise FileNotFoundError(
+            f"No local CSV found for station {station_code}. "
+            f"Expected something like FF-RGroundwater-{station_code}-GWL.csv."
+        )
+
+    SeasonalAnalysisAgent(start_year=start_year, end_year=end_year).analyze(
+        input_csv=input_csv,
+        output_dir=output_dir,
+        station_code=station_code,
+    )
+    return model_json
+
+
 def _require_analysis_dependencies(needs_plot: bool) -> None:
     missing = []
     if np is None:
