@@ -78,6 +78,7 @@ http://127.0.0.1:8000
 
 The web app lets a client:
 
+- click station points on a map
 - choose a station
 - upload a groundwater CSV directly
 - enter a year
