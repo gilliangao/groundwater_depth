@@ -186,6 +186,11 @@ def analyze_uploaded_csv(file_bytes: bytes, filename: str, year: int, station_co
         temp_path.unlink(missing_ok=True)
 
 
+def prediction_for_station(station_code: str, year: int) -> Dict[str, float]:
+    model_json = ensure_station_model(station_code, base_dir=BASE_DIR)
+    return GroundwaterPredictionAgent().predict(model_json, year)
+
+
 def prediction_to_csv_bytes(result: Dict[str, float]) -> bytes:
     fieldnames = ["Year", "Station", "Algorithm", "DJF", "MAM", "JJA", "SON", "Annual_Mean"]
     buffer = io.StringIO()
@@ -352,7 +357,7 @@ def render_page(
       <div class="stack">
         <section class="panel map-panel">
           <h2>Explore stations on the map</h2>
-          <p class="hint">Click any station marker to open the prediction for the year currently shown in the form.</p>
+          <p class="hint">Click any station marker to open a popup. From there, clients can either view the prediction page or download the predicted CSV for the year currently shown in the form.</p>
           <div id="station-map"></div>
           <p class="map-legend">Markers show the BGS Future Flows groundwater stations. The selected station stays synced with the prediction form below.</p>
         </section>
@@ -431,14 +436,16 @@ def render_page(
 
         marker.bindTooltip(`${{station.location}} (${{station.code}})`, {{ direction: "top" }});
         marker.bindPopup(
-          `<strong>${{station.location}}</strong><br>${{station.code}}<br>${{station.aquifer}}<br>${{station.grid_reference}}`
+          `<strong>${{station.location}}</strong><br>${{station.code}}<br>${{station.aquifer}}<br>${{station.grid_reference}}<br><br>` +
+          `<a href="/?station=${{encodeURIComponent(station.code)}}&year=${{encodeURIComponent(yearInput && yearInput.value ? yearInput.value : "2050")}}">View prediction</a>` +
+          ` &nbsp;|&nbsp; ` +
+          `<a href="/prediction.csv?station=${{encodeURIComponent(station.code)}}&year=${{encodeURIComponent(yearInput && yearInput.value ? yearInput.value : "2050")}}">Download predicted CSV</a>`
         );
         marker.on("click", () => {{
           if (stationSelect) {{
             stationSelect.value = station.code;
           }}
-          const targetYear = yearInput && yearInput.value ? yearInput.value : "2050";
-          window.location.href = `/?station=${{encodeURIComponent(station.code)}}&year=${{encodeURIComponent(targetYear)}}`;
+          marker.openPopup();
         }});
         markers.push(marker);
       }});
@@ -457,6 +464,9 @@ def render_page(
 class GroundwaterRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
+        if parsed.path == "/prediction.csv":
+            self._handle_prediction_csv_get(parsed)
+            return
         if parsed.path == "/download":
             self.send_error(405, "Use POST to download prediction CSV")
             return
@@ -498,6 +508,33 @@ class GroundwaterRequestHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+    def _handle_prediction_csv_get(self, parsed) -> None:
+        params = parse_qs(parsed.query)
+        station_code = normalize_station_code(params.get("station", [""])[0])
+        if not station_code:
+            self.send_error(400, "Missing station parameter")
+            return
+        try:
+            year = int(params.get("year", ["2050"])[0])
+        except ValueError:
+            self.send_error(400, "Invalid year parameter")
+            return
+
+        try:
+            result = prediction_for_station(station_code, year)
+        except Exception as exc:
+            self.send_error(400, f"Could not build prediction CSV: {exc}")
+            return
+
+        payload = prediction_to_csv_bytes(result)
+        filename = f"{station_code}_prediction_{year}.csv"
+        self.send_response(200)
+        self.send_header("Content-Type", "text/csv; charset=utf-8")
+        self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)

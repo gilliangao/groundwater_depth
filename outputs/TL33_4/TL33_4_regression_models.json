@@ -1,6 +1,6 @@
 {
   "station_code": "TL33_4",
-  "source_csv": "FF-RGroundwater-TL33_4-GWL.csv",
+  "source_csv": "/var/folders/8w/hc8lh0tx75n2yz7sbp975xp40000gn/T/TL33_4_gdmn0tro.csv",
   "year_range": {
     "start": 2000,
     "end": 2080
