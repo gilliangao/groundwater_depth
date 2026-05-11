@@ -57,14 +57,18 @@ class StationRecord:
     location: str
     aquifer: str
     grid_reference: str
+    # Exact filenames as served by the BGS server (case-sensitive).
+    # The server does not redirect wrong-case requests on all platforms.
+    _levels_zip: str = ""
+    _climate_zip: str = ""
 
     @property
     def levels_zip_name(self) -> str:
-        return f"FutureFlowsHydrology-{self.dataset_code}-GWL.zip"
+        return self._levels_zip or f"FutureFlowsHydrology-{self.dataset_code}-GWL.zip"
 
     @property
     def climate_zip_name(self) -> str:
-        return f"FutureFlowsClimate-{self.dataset_code}.zip"
+        return self._climate_zip or f"FutureFlowsClimate-{self.dataset_code}.zip"
 
     @property
     def levels_url(self) -> str:
@@ -85,31 +89,43 @@ class SeasonalRegressionResult:
     std_error: float
 
 
+def _s(code: str, wid: str, loc: str, aq: str, grid: str,
+        lzip: str = "", czip: str = "") -> StationRecord:
+    return StationRecord(code, wid, loc, aq, grid, lzip, czip)
+
+
 BGS_STATIONS: Tuple[StationRecord, ...] = (
-    StationRecord("SY68_34", "SY68/34", "Ashton Farm", "Chalk", "3661 0880"),
-    StationRecord("TA10_63", "TA10/63", "Aylesby", "Chalk", "5194 4071"),
-    StationRecord("SU81_1", "SU81/1", "Chilgrove House", "Chalk", "4835 1143"),
-    StationRecord("SU34_8D", "SU34/8D", "Clanville Lodge Gate", "Chalk", "4322 1490"),
-    StationRecord("SE94_5", "SE94/5", "Dalton Holme", "Chalk", "4965 4453"),
-    StationRecord("ST88_62A", "ST88/62A", "Didmarton 1", "Inferior Oolite", "3827 1874"),
-    StationRecord("SD27_6B", "SD27/6B", "Furness Abbey", "Permo-Triassic Sandstone", "3216 4717"),
-    StationRecord("TL89_37", "TL89/37", "Grimes Graves", "Chalk", "5817 2900"),
-    StationRecord("SJ62_112", "SJ62/112", "Heathlanes", "Permo-Triassic Sandstone", "3619 3210"),
-    StationRecord("SK17_13", "SK17/13", "Hucklow South", "Carboniferous Limestone", "4177 3775"),
-    StationRecord("TR14_9", "TR14/9", "Little Bucket Farm", "Chalk", "6122 1469"),
-    StationRecord("SJ15_13", "SJ15/13", "Llanfair Dyffryn Clwyd", "Permo-Triassic Sandstone", "3137 3555"),
-    StationRecord("TQ41_82", "TQ41/82", "Lower Barn Cottage", "Lower Greensand", "5437 1132"),
-    StationRecord("TF03_37", "TF03/37", "New Red Lion", "Lincolnshire Limestone", "5088 3303"),
-    StationRecord("NX97_2", "NX97/2", "Newbridge", "Permo-Triassic Sandstone", "2951 5788"),
-    StationRecord("SU17_57", "SU17/57", "Rockley", "Chalk", "4165 1717"),
-    StationRecord("NY63_2", "NY63/2", "Skirwith", "Permo-Triassic Sandstone", "3613 5325"),
-    StationRecord("SU78_45A", "SU78/45A", "Stonor Park", "Chalk", "4741 1892"),
-    StationRecord("NZ21_29", "NZ21/29", "Swan House", "Magnesian Limestone", "4252 5199"),
-    StationRecord("TL33_4", "TL33/4", "Therfield Rectory", "Chalk", "5333 2372"),
-    StationRecord("TF81_2A", "TF81/2A", "Washpit Farm", "Chalk", "5813 3196"),
-    StationRecord("TQ25_13", "TQ25/13", "Well House Inn", "Chalk", "5258 1552"),
-    StationRecord("TV59_7C", "TV59/7C", "West Dean No. 3", "Chalk", "5529 0992"),
-    StationRecord("SU01_5B", "SU01/5B", "West Woodyates Manor", "Chalk", "4016 1194"),
+    _s("SY68_34",  "SY68/34",  "Ashton Farm",              "Chalk",                      "3661 0880"),
+    _s("TA10_63",  "TA10/63",  "Aylesby",                  "Chalk",                      "5194 4071"),
+    _s("SU81_1",   "SU81/1",   "Chilgrove House",          "Chalk",                      "4835 1143"),
+    _s("SU34_8D",  "SU34/8D",  "Clanville Lodge Gate",     "Chalk",                      "4322 1490",
+       "FutureFlowsHydrology-SU34_8d-GWL.zip"),
+    _s("SE94_5",   "SE94/5",   "Dalton Holme",             "Chalk",                      "4965 4453"),
+    _s("ST88_62A", "ST88/62A", "Didmarton 1",              "Inferior Oolite",            "3827 1874",
+       "FutureFlowsHydrology-ST88_62a-GWL.zip"),
+    _s("SD27_6B",  "SD27/6B",  "Furness Abbey",            "Permo-Triassic Sandstone",   "3216 4717",
+       "FF-ZOOMQ3D-SpatialChange-GWL.zip"),
+    _s("TL89_37",  "TL89/37",  "Grimes Graves",            "Chalk",                      "5817 2900"),
+    _s("SJ62_112", "SJ62/112", "Heathlanes",               "Permo-Triassic Sandstone",   "3619 3210"),
+    _s("SK17_13",  "SK17/13",  "Hucklow South",            "Carboniferous Limestone",    "4177 3775"),
+    _s("TR14_9",   "TR14/9",   "Little Bucket Farm",       "Chalk",                      "6122 1469"),
+    _s("SJ15_13",  "SJ15/13",  "Llanfair Dyffryn Clwyd",  "Permo-Triassic Sandstone",   "3137 3555"),
+    _s("TQ41_82",  "TQ41/82",  "Lower Barn Cottage",       "Lower Greensand",            "5437 1132"),
+    _s("TF03_37",  "TF03/37",  "New Red Lion",             "Lincolnshire Limestone",     "5088 3303"),
+    _s("NX97_2",   "NX97/2",   "Newbridge",                "Permo-Triassic Sandstone",   "2951 5788"),
+    _s("SU17_57",  "SU17/57",  "Rockley",                  "Chalk",                      "4165 1717"),
+    _s("NY63_2",   "NY63/2",   "Skirwith",                 "Permo-Triassic Sandstone",   "3613 5325"),
+    _s("SU78_45A", "SU78/45A", "Stonor Park",              "Chalk",                      "4741 1892",
+       "FutureFlowsHydrology-SU78_45a-GWL.zip"),
+    _s("NZ21_29",  "NZ21/29",  "Swan House",               "Magnesian Limestone",        "4252 5199"),
+    _s("TL33_4",   "TL33/4",   "Therfield Rectory",        "Chalk",                      "5333 2372"),
+    _s("TF81_2A",  "TF81/2A",  "Washpit Farm",             "Chalk",                      "5813 3196",
+       "FutureFlowsHydrology-TF81_2a-GWL.zip"),
+    _s("TQ25_13",  "TQ25/13",  "Well House Inn",           "Chalk",                      "5258 1552"),
+    _s("TV59_7C",  "TV59/7C",  "West Dean No. 3",          "Chalk",                      "5529 0992",
+       "FutureFlowsHydrology-TV59_7c-GWL.zip"),
+    _s("SU01_5B",  "SU01/5B",  "West Woodyates Manor",    "Chalk",                      "4016 1194",
+       "FutureFlowsHydrology-SU01_5b-GWL.zip"),
 )
 
 
@@ -535,7 +551,6 @@ class GroundwaterPredictionAgent:
     """Agent 3: year-based prediction for a selected station."""
 
     def predict(self, model_json: Path, year: int) -> Dict[str, float]:
-        _require_analysis_dependencies(needs_plot=False)
         payload = json.loads(model_json.read_text(encoding="utf-8"))
         seasons = payload["seasons"]
         prediction = {"Year": year, "Station": payload["station_code"], "Algorithm": payload["algorithm"]}
@@ -546,7 +561,7 @@ class GroundwaterPredictionAgent:
             value = slope * year + intercept
             prediction[season] = value
             season_values.append(value)
-        prediction["Annual_Mean"] = float(np.mean(season_values))
+        prediction["Annual_Mean"] = float(sum(season_values) / len(season_values))
         return prediction
 
     def save_prediction(self, prediction: Dict[str, float], output_csv: Path) -> Path:
@@ -614,9 +629,11 @@ def ensure_station_model(
 
     input_csv = find_local_station_csv(station_code, search_dir=base_dir)
     if input_csv is None:
+        input_csv = find_local_station_csv(station_code, search_dir=base_dir / "downloads")
+    if input_csv is None:
         raise FileNotFoundError(
             f"No local CSV found for station {station_code}. "
-            f"Expected something like FF-RGroundwater-{station_code}-GWL.csv."
+            f"Run groundwater_bulk_ingest.py to download all station datasets."
         )
 
     SeasonalAnalysisAgent(start_year=start_year, end_year=end_year).analyze(

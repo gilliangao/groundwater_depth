@@ -1,4 +1,39 @@
+# ── Environment & secrets ─────────────────────────────────────────────────────
+.env
+
+# ── Python ────────────────────────────────────────────────────────────────────
 venv_plot/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# ── Downloaded raw data (reproduced by running groundwater_bulk_ingest.py) ────
+downloads/
+FF-RGroundwater-TL33_4-GWL.csv
+
+# ── Generated outputs (plots, CSVs, model JSON) ───────────────────────────────
+outputs/
+
+# ── Loose analysis artefacts from early exploration ───────────────────────────
+annual_mean_plot.png
+seasonal_mean_plot_*.png
+seasonal_plot_*.png
+seasonal_trends_combined.png
+seasonal_means_2000_2080.csv
+seasonal_means_table.csv
+seasonal_trends_table.csv
+predicted_seasonal_means_table.csv
+
+# ── LaTeX scratch files ───────────────────────────────────────────────────────
+test.aux
+test.log
+test.out
+test.pdf
+test.toc
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
 .DS_Store

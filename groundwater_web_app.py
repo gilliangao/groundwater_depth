@@ -187,7 +187,14 @@ def analyze_uploaded_csv(file_bytes: bytes, filename: str, year: int, station_co
 
 
 def prediction_for_station(station_code: str, year: int) -> Dict[str, float]:
-    model_json = ensure_station_model(station_code, base_dir=BASE_DIR)
+    output_dir = BASE_DIR / "outputs" / station_code
+    model_json = output_dir / f"{station_code}_regression_models.json"
+    if not model_json.exists():
+        raise FileNotFoundError(
+            f"No saved model is available for station {station_code}. "
+            "Build one first with a local CSV in the project folder, or run the app with "
+            "`venv_plot/bin/python groundwater_web_app.py` so new station models can be created."
+        )
     return GroundwaterPredictionAgent().predict(model_json, year)
 
 
@@ -375,7 +382,7 @@ def render_page(
             <button type="submit">Predict from saved model</button>
           </form>
           {metadata}
-          <p class="footer">Tip: Therfield Rectory (`TL33_4`) already has generated model outputs in this repository, so it works immediately.</p>
+          <p class="footer">All 23 BGS Future Flows stations have pre-built regression models. Select any station and predict immediately.</p>
         </section>
 
         <section class="panel">
